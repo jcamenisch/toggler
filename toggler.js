@@ -1,21 +1,26 @@
-(function($){
+(function($, undefined) {
 
-  $.fn.toggler = function() {
-    var
-      selector, options,
-      toggler = function(event) {
-        $(event.target).targetElement().toggle();
-        return options && options.go_to_target;
-      }
-    ;
-    if (typeof arguments[0] === 'string') {
-      selector = arguments[0];
-      options = arguments[1];
-      return this.delegate(selector, 'click', toggler);
-    } else {
-      options = arguments[0] || {}
-      return this.click(toggler);
+  /*
+   *  .toggler() can be called in one of two ways:
+   *  1. on a set of elements directly with
+   *     $(selector).toggler(options);
+   *  2. on container element(s) from which to delegate with:
+   *     $(containerSelector).toggler(selector, options)
+   */
+  $.fn.toggler = function(selector, options) {
+
+    function go (event) {
+      $(event.target).targetElement().toggle();
+      return options && options.go_to_target;
+    };
+
+    if (typeof selector !== 'string') {
+      options = selector || {};
+      selector = false;
     }
+
+    if (selector) return this.delegate(selector, 'click', go);
+    else return this.click(go);
   };
 
 })(jQuery);
